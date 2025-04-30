@@ -10,7 +10,7 @@
 
 resource "null_resource" "import_script_dependencies" {
   provisioner "local-exec" {
-    command = "virtualenv -p ${var. python_version} ${path.module}/venv && . ${path.module}/venv/bin/activate && pip install -r ${path.module}/scripts/requirements.txt"
+    command = "virtualenv -p ${var.python_version} ${path.module}/venv && . ${path.module}/venv/bin/activate && pip install -r ${path.module}/scripts/requirements.txt"
   }
   lifecycle {
     ignore_changes = all
@@ -18,6 +18,7 @@ resource "null_resource" "import_script_dependencies" {
 }
 
 resource "null_resource" "set_static_dhcp_mapping" {
+  depends_on = [null_resource.import_script_dependencies]
   provisioner "local-exec" {
     command = "${path.module}/venv/bin/python ${path.module}/scripts/set_static_dhcp_mapping.py"
     environment = {
@@ -34,6 +35,5 @@ resource "null_resource" "set_static_dhcp_mapping" {
   lifecycle {
     ignore_changes = all
   }
-  depends_on = [null_resource.import_script_dependencies]
 }
 
