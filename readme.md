@@ -8,8 +8,8 @@ A simple terraform module that get create a new record in dhcp static mapping on
 
 - Import the module by referencing it in your main terraform file (`main.tf`) using :
 ```hcl
-module "pve_highest_lxc_id" {
-  source     = "git::https://github.com/tiny-company/tfm-pve_highest_lxc_id.git"
+module "pfsense_register_static_dhcp_mapping" {
+  source     = "git::https://github.com/tiny-company/tfm-pfsense_register_static_dhcp_mapping.git"
   pfsense_url = var.pfsense_url
   pfsense_username = var.pfsense_username
   pfsense_password = var.pfsense_password

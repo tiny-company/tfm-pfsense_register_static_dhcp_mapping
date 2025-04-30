@@ -76,10 +76,7 @@ def set_static_dhcp_mapping(pfsense_url: str, pfsense_username: str, pfsense_pas
             "domain": record_data.get("domain")
         }
         response = requests.post(f'{pfsense_url}/api/v2/services/dhcp_server/static_mapping', headers=headers, data=json.dumps(data), verify=False)
-        if response.status_code == 200:
-            dhcp_data = response.json()
-            return dhcp_data
-        else:
+        if not response.status_code == 200:
             raise ValueError(f'An error occured while trying to send request to pfsense server : {response.text}')
             return None
     except Exception as e:
