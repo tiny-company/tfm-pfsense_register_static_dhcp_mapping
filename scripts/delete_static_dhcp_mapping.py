@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------
-# - Filename: set_static_dhcp_mapping.py
+# - Filename: delete_static_dhcp_mapping.py
 # - Author : draed
 # - Dependency : none
-# - Description : python script that create a dhcp static mapping
+# - Description : python script that delete a dhcp static mapping
 #   on a pfsense server
-# - Creation date : 2025-04-30
+# - Creation date : 2025-05-02
 # - Python version : 3.11.2
 # ------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ def get_dhcp_data(pfsense_url: str, pfsense_username: str, pfsense_password: str
         raise ValueError(f'An error occurred: {e}')
         return None
 
-def set_static_dhcp_mapping(pfsense_url: str, pfsense_username: str, pfsense_password: str, record_data: dict, pfsense_dhcp_id: str = "lan"):
+def delete_static_dhcp_mapping(pfsense_url: str, pfsense_username: str, pfsense_password: str, record_data: dict, pfsense_dhcp_id: str = "lan"):
     """
     Set a dhcp static mapping on a pfsense server
 
@@ -70,8 +70,8 @@ def set_static_dhcp_mapping(pfsense_url: str, pfsense_username: str, pfsense_pas
     dhcp_data = get_dhcp_data(pfsense_url, pfsense_username, pfsense_password)
     dhcp_static_mapping_list = dhcp_data.get("data").get("staticmap")
     dhcp_static_mapping_exist = {static_ip.get("ipaddr") for static_ip in dhcp_static_mapping_list if static_ip.get("ipaddr") == record_data.get("ip_address")}
-    if dhcp_static_mapping_exist:
-        raise ValueError(f'A record for ip : {record_data.get("ip_address")} already exist in pfsense server')
+    if not dhcp_static_mapping_exist:
+        raise ValueError(f'No record for ip : {record_data.get("ip_address")} found in pfsense server')
     try:
         headers = {
             'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ def set_static_dhcp_mapping(pfsense_url: str, pfsense_username: str, pfsense_pas
             "hostname": record_data.get("hostname"),
             "domain": record_data.get("domain")
         }
-        response = requests.post(f'https://{pfsense_url}/api/v2/services/dhcp_server/static_mapping', headers=headers, data=json.dumps(data), verify=False)
+        response = requests.delete(f'https://{pfsense_url}/api/v2/services/dhcp_server/static_mapping', headers=headers, data=json.dumps(data), verify=False)
         if not response.status_code == 200:
             raise ValueError(f'An error occured while trying to send request to pfsense server : {response.text}')
             return None
@@ -132,5 +132,5 @@ if __name__ == "__main__":
   pfsense_url = os.getenv('PFSENSE_URL')
   pfsense_username = os.getenv('PFSENSE_USERNAME')
   pfsense_password = os.getenv('PFSENSE_PASSWORD')
-  set_static_dhcp_mapping(pfsense_url, pfsense_username, pfsense_password, record_data)
+  delete_static_dhcp_mapping(pfsense_url, pfsense_username, pfsense_password, record_data)
   apply_static_dhcp_mapping(pfsense_url, pfsense_username, pfsense_password)
