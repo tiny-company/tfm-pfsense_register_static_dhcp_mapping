@@ -26,6 +26,7 @@ resource "null_resource" "set_static_dhcp_mapping" {
 
 resource "null_resource" "delete_static_dhcp_mapping" {
   triggers = {
+      python_version = var.python_version
       record_data_mac = var.record_data_mac
       record_data_ip_address = var.record_data_ip_address
       record_data_cid = var.record_data_cid
@@ -37,7 +38,7 @@ resource "null_resource" "delete_static_dhcp_mapping" {
     }
   provisioner "local-exec" {
     when    = destroy
-    command = "virtualenv -p ${var.python_version} ${path.module}/venv && ${path.module}/venv/bin/python -m pip install -r ${path.module}/scripts/requirements.txt && ${path.module}/venv/bin/python ${path.module}/scripts/delete_static_dhcp_mapping.py"
+    command = "virtualenv -p ${self.triggers.python_version} ${path.module}/venv && ${path.module}/venv/bin/python -m pip install -r ${path.module}/scripts/requirements.txt && ${path.module}/venv/bin/python ${path.module}/scripts/delete_static_dhcp_mapping.py"
     environment = {
       RECORD_DATA_MAC = "${self.triggers.record_data_mac}"
       RECORD_DATA_IP_ADDRESS = "${self.triggers.record_data_ip_address}"
