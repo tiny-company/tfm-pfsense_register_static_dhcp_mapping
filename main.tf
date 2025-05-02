@@ -10,7 +10,7 @@
 
 resource "null_resource" "import_script_dependencies" {
   provisioner "local-exec" {
-    command = "virtualenv -p ${var.python_version} ${path.module}/venv && ${path.module}/venv/bin/activate && pip install -r ${path.module}/scripts/requirements.txt"
+    command = "virtualenv -p ${var.python_version} ${path.module}/venv && ${path.module}/venv/bin/python -m pip install -r ${path.module}/scripts/requirements.txt"
   }
 }
 
