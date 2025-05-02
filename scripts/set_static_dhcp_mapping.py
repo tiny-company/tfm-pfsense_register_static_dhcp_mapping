@@ -1,3 +1,13 @@
+# ------------------------------------------------------------------
+# - Filename: set_static_dhcp_mapping.py
+# - Author : draed
+# - Dependency : none
+# - Description : python script that create a dhcp static mapping
+#   on a pfsense server
+# - Creation date : 2025-04-30
+# - Python version : 3.11.2
+# ------------------------------------------------------------------
+
 import requests
 import os
 import json
