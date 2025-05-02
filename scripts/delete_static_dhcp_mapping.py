@@ -72,7 +72,10 @@ def delete_static_dhcp_mapping(pfsense_url: str, pfsense_username: str, pfsense_
     dhcp_static_mapping_exist = {static_ip.get("ipaddr") for static_ip in dhcp_static_mapping_list if static_ip.get("ipaddr") == record_data.get("ip_address")}
     if not dhcp_static_mapping_exist:
         raise ValueError(f'No record for ip : {record_data.get("ip_address")} found in pfsense server')
-    dhcp_static_id = {static_ip.get("id") for static_ip in dhcp_static_mapping_list if static_ip.get("ipaddr") == record_data.get("ip_address")}
+    dhcp_static_id = next(
+        (static_ip.get("id") for static_ip in dhcp_static_mapping_list if static_ip.get("ipaddr") == record_data.get("ip_address")),
+        None
+    )
     try:
         headers = {
             'Content-Type': 'application/json',
