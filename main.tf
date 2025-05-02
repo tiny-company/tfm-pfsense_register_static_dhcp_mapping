@@ -29,8 +29,5 @@ resource "null_resource" "set_static_dhcp_mapping" {
       PFSENSE_PASSWORD = "${var.pfsense_password}"
     }
   }
-  lifecycle {
-    ignore_changes = all
-  }
 }
 
