@@ -8,17 +8,9 @@
 # - terraform version : OpenTofu v1.9.0
 # ------------------------------------------------------------------
 
-resource "null_resource" "import_script_dependencies" {
-  provisioner "local-exec" {
-    command = "virtualenv -p ${var.python_version} ${path.module}/venv && ${path.module}/venv/bin/python -m pip install -r ${path.module}/scripts/requirements.txt"
-  }
-
-}
-
 resource "null_resource" "set_static_dhcp_mapping" {
-  depends_on = [null_resource.import_script_dependencies]
   provisioner "local-exec" {
-    command = "${path.module}/venv/bin/python ${path.module}/scripts/set_static_dhcp_mapping.py"
+    command = "virtualenv -p ${var.python_version} ${path.module}/venv && ${path.module}/venv/bin/python -m pip install -r ${path.module}/scripts/requirements.txt && ${path.module}/venv/bin/python ${path.module}/scripts/set_static_dhcp_mapping.py"
     environment = {
       RECORD_DATA_MAC = "${var.record_data_mac}"
       RECORD_DATA_IP_ADDRESS = "${var.record_data_ip_address}"
